@@ -1,4 +1,8 @@
-import {createParamDecorator, ExecutionContext} from '@nestjs/common'
+import {
+  createParamDecorator,
+  ExecutionContext,
+  ForbiddenException,
+} from '@nestjs/common'
 import {GqlExecutionContext} from '@nestjs/graphql'
 import {JwtPayload} from '../types'
 import {JwtService} from '@nestjs/jwt'
@@ -18,14 +22,15 @@ export const CurrentUserData = createParamDecorator(
     // const user
     console.log(head.authorization)
     const refreshToken = head.authorization
-    const {userId} = jwtService.decode(refreshToken) as JwtPayload
-    console.log('userId', userId)
+    const user = jwtService.decode(refreshToken) as JwtPayload
+    if (!user) throw new ForbiddenException('Access Denied')
+    console.log('userId', user.userId)
     console.log('refreshToken', refreshToken)
     // console.log('req in decorator', req)
     // const user = req.user as JwtPayload
     console.log('req.user', req.user)
     // return user.userId //userId
     // return head.authorization
-    return {userId, refreshToken}
+    return {userId: user.userId, refreshToken}
   }
 )

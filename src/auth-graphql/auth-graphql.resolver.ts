@@ -79,22 +79,16 @@ export class AuthGraphqlResolver {
 
   @Public() // we need the public to access it when we dont have a valid token
   @Mutation('getNewTokens') //the name need to be the same at the schema.graphql
-  // @UseGuards(RefreshTokenGuard) //we use this guard
+  // @UseGuards(RefreshTokenGuard)
   // @HttpCode(HttpStatus.OK) // TODO: maybe call it Refresh
   getNewTokens(
     // @Req() req: Request
     // @CurrentUserId() userId: string, // we use the decorator to get the userId , and refreshToken , we have access to the refresh token cause we use the strategy that will return it
     @CurrentUserData() payloadData: any
-    //TODO**: try to get as input only the req . we will extract the user data from there, log the req to see
-    // @Args('input') refreshInput: RefreshInputDto
   ): Promise<NewTokensResponse> {
-    //<NewTokensResponse>
-    // const ctx = GqlExecutionContext.create(context)
     const {userId, refreshToken} = payloadData
     console.log('payloadData', payloadData)
     // console.log('refreshToken', refreshToken)
-    // console.log('refreshInput', refreshInput)
-    // console.log('refreshTokne', refreshToken)
     return this.authGraphqlService.getNewTokens(userId, refreshToken)
   }
 
